@@ -123,23 +123,42 @@ Vi får her opp at det er landene Andorra, Dominica og Marshall Islands som har 
 10. Read in total_population and join with g_c. Remember to change the time variable from integertodate.Then left_join g_c and pop.
 
 ```{r}
-pop <- ddf_datapoints_population_total_by_geo_time <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--population_total--by--geo--time.csv")
-col_types = cols(time = col_date(format = "%Y"))
-
+pop <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--population_total--by--geo--time.csv",
+col_types = cols(time = col_date(format = "%Y")))
 ```
 
 ```{r}
 g_c <- g_c%>% 
     left_join(pop, by =c("country" = "geo", "year" = "time"))
 ```
+
 11. Let u_pop be urban population. Import urban_population and left_join with g_c.
 
 ```{r}
-u_pop <- ddf_datapoints_urban_population_by_geo_time <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--urban_population--by--geo--time.csv")
+u_pop <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--urban_population--by--geo--time.csv",
+    col_types = cols(time = col_date(format = "%Y")))
+
+u_pop <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--urban_population--by--geo--time.csv", 
+    col_types = cols(time = col_date(format = "%Y")))
 ```
 
 ```{r}
 g_c <- g_c %>%
-    left_join(u_pop, by("country" = "geo", "year" = "time"))
+  left_join(u_pop, by = c("country" = "geo", "year" = "time"))
 ```
+
+12. Read in gdp_percapita_us_inflation_adjusted and call it ‘gdp_pc`. Left join the data with g_c.
+
+```{r}
+gdp_pc <- ddf_datapoints_gdppercapita_us_inflation_adjusted_by_geo_time <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--gdppercapita_us_inflation_adjusted--by--geo--time.csv",
+    col_types = cols(time = col_date(format = "%Y")))
+```
+
+```{r}
+g_c <- g_c %>%
+  left_join(gdp_pc, by = c("country" = "geo", "year" = "time"))
+```
+13. Restrict g_c to the period from 1962 to 2017 (in the gapminder package there is data from the years 1952 and 1957, but these seems to have disappeared from systema_globalis) and select the variables: name, continent, year, lifeExp, pop, gdpPercap.  As in gapminder use data from every 5th year,i.e. 1962, 1967, 1972, 1977, 1982, 1987, 1992, 1997, 2002, 2007, 2012, 2017.
+
+
 
