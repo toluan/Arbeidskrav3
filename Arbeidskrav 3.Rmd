@@ -1,0 +1,145 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r include=FALSE}
+library(readr)
+library(tibble)
+library(prettydoc)
+library(knitr)
+library(tidyverse)
+library(dplyr)
+options(scipen = 999)
+```
+
+
+1. What information does the file ddf_concepts.csv contain.?
+
+I filen ddf_concepts.csv inneholder det en oversikt over alle datasettene som finnes i gapminderen. En kan der gå inn å se etter datasett som kan være interessante, slik at en da slipper å gå gjennom alle filene for å se hva det er. Det er 596 observasjoner med 17 variabler i filen.
+
+2. What information does the fileddf--entities--geo--country.csvcontain?
+
+I denne filen får vi en oversikt over hvordan befolkningen i ulike land har det. De har rangert hvilken inntektsgruppe befolkningen er i og hvilken religion som er hovedreligionen i landet. De har også sett på om landet har kystlinje eller ikke. Det er også to forskjellige måter å bestemme hvilken verdensregion landene tilhører. Den ene variablene har brukt fire regioner, mens den andre har brukt seks regioner. Det er 273 observasjoner med 21 variabler i filen. 
+
+3. What information does the fileddf--gapminder--systema_globalis/ddf--entities--geo--un_sdg_region.csvcontain?
+
+I filen er det 8 observasjoner med 4 variabler. Den gir en oversikt over hvilke land som er i variabelen. Et eksempel er "un_oceania_exc_australia_and_new_zealand" som betyr Oceanica uten Australia og New Zealand. 
+
+
+4. Recreate the continent variable with the new data.   Only include countries that have a iso3166_1_alpha3code.  Use data from ddf--entities--geo--country.csv and call this tib-bleg_c. Let g_cbe your main tibble in the following, i.e. add variables to this tibble.
+
+```{r}
+library(readr)
+g_c <- read_csv("Data/ddf--gapminder--systema_globalis-master/ddf--entities--geo--country.csv")
+print(g_c)
+```
+
+```{r}
+g_c <- g_c %>%
+  mutate(continent = case_when(
+    world_4region == "asia" & un_sdg_region %in% c("un_australia_and_new_zealand", "un_oceania_exc_australia_and_new_zealand") ~ "Oceania",
+    world_4region ==  "asia" & !(un_sdg_region %in% c("un_australia_and_new_zealand", "un_oceania_exc_australia_and_new_zealand")) ~ "Asia",
+    world_4region == "americas" ~ "Americas",
+    world_4region == "africa" ~ "Africa",
+    world_4region ==  "europe" ~ "Europe")
+  ) %>%
+ filter(!is.na(iso3166_1_alpha3))
+```
+
+```{r}
+view(g_c)
+```
+
+5. How many countries are there now?
+The functions unique()and length()might be of some help.
+```{r}
+length(g_c$name)
+```
+
+Det er 247 land igjen etter oppgave 4. 
+
+
+6. How many countries are there now in each continent?
+
+```{r}
+g_c %>%
+    count(continent)
+```
+
+
+7. Read in the variable Life Expectancy (lifeExp) tog_c. You should change the format of thetimevariable todatewith format%Ywhen you import the data (click on the column name). How manycountries have information aboutlifeExp?
+
+```{r}
+lifeExp <-read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--life_expectancy_years--by--geo--time.csv",col_types =cols(time =col_date(format = "%Y")))
+lifeExp <- lifeExp%>%rename(year = time)
+length(unique(lifeExp$geo))
+```
+
+Det er nå 189 land igjen med informasjon om forventet levetid. 
+
+8. Reduce g_c to the variables: country, name, iso3166_1_alpha3, main_religion_2008, un_sdg_region,world_4region, continent, world_6region.
+
+```{r}
+g_c <- g_c%>%
+    select(country, name, iso3166_1_alpha3, main_religion_2008, un_sdg_region, world_4region, continent,     world_6region) %>%
+    left_join(lifeExp, by =c("country" = "geo")) %>%
+    filter(!(is.na(year)& is.na(life_expectancy_years))) %>%
+    filter(year<"2020-01-01")
+```
+
+9. What is the first observation of lifeExp for the different countries? (Hint;group_by() country and find minimum year for each group by using summarise()). Use a command like table(g_c_min$year_min) to make a table of the distribution of first year of life expectancy data. Find the names of the 3 countries that have the shortest series of Life Expectancy.
+
+```{r}
+g_c_min <- g_c %>%
+  group_by(country) %>%
+  summarise(min_year = min(year)) 
+
+attach(g_c_min)
+table(min_year)
+```
+
+Vi ser ved å bruke table-funksjonen får vi opp to forskjellige årstall og antall observasjoner. I 1800 er det 186 observasjoner og i 1970 er det 3 observasjoner. Siden vi forventer at levealder har økt siden 1800, er det mer relevant å se på 1970. 
+
+```{r}
+g_c_min %>% 
+    filter(min_year == "1970-01-01")
+```
+
+```{r}
+g_c_min <- g_c_min %>%
+  left_join(g_c,
+            by = "country") %>%
+  filter(min_year == "1970-01-01")
+
+attach(g_c_min)
+tibble(country = unique(name.x))
+```
+
+Vi får her opp at det er landene Andorra, Dominica og Marshall Islands som har den laveste forventede levealderen.
+
+10. Read in total_population and join with g_c. Remember to change the time variable from integertodate.Then left_join g_c and pop.
+
+```{r}
+pop <- ddf_datapoints_population_total_by_geo_time <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--population_total--by--geo--time.csv")
+col_types = cols(time = col_date(format = "%Y"))
+
+```
+
+```{r}
+g_c <- g_c%>% 
+    left_join(pop, by =c("country" = "geo", "year" = "time"))
+```
+11. Let u_pop be urban population. Import urban_population and left_join with g_c.
+
+```{r}
+u_pop <- ddf_datapoints_urban_population_by_geo_time <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--urban_population--by--geo--time.csv")
+```
+
+```{r}
+g_c <- g_c %>%
+    left_join(u_pop, by("country" = "geo", "year" = "time"))
+```
+
