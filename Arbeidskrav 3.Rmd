@@ -223,5 +223,3 @@ my_gapminder_1962 %>%
   ggplot(my_gampinder_1962, mapping = aes(x = gdpPercap, y = lifeExp, size = pop, colour = continent)) +
   geom_point() 
 ```
- 
-  
