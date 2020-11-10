@@ -188,7 +188,40 @@ Deretter opprettet vi datasettet "gapminder1" der vi først rangerte variabelen 
 14. Make a subset of gapminder, my_gapminder_1962, which include countries with data from 1962-2017(include Venezuela even though it has NA for gdpPercap2017). How many countries are now in the dataset? How many countries from each continent? How many NAs are there in my_gapminder_1962`? (Hint: The function duplicated()might be of help)
 
 ```{r}
-
-
+my_gapminder_1962 <- gapminder1 %>% 
+  group_by(country) %>%
+  filter(year == "1962-01-01") %>%
+  filter(!is.na(gdpPercap)) 
+  
+length(unique(my_gapminder_1962$country))
+  
 ```
 
+Vi ser her at det nå er 90 land igjen etter at vi fjernet de som manglet data om gdpPercap. Under har vi fått opp en tabell som viser hvordan fordelingen av land per kontinent er. Det er flest land fra Afrika og minst land fra Oceania. 
+
+```{r}
+my_gapminder_1962 %>%
+  distinct(country, continent) %>%
+  group_by(continent) %>%
+  count() %>%
+  kable()
+```
+
+```{r Venezuela}
+my_gapminder_venezuela <- gapminder1 %>% 
+  group_by(country) %>%
+  filter(country == "Venezuela") %>%
+  filter(!is.na(gdpPercap)) 
+  
+  my_gapminder_venezuela
+```
+ 
+15. Use ggplot()and let x be gdpPercap,y be lifeExp and size the population. Make a plot for each of the years 1962, 1987, 2017.
+ 
+```{r}
+my_gapminder_1962 %>%
+  ggplot(my_gampinder_1962, mapping = aes(x = gdpPercap, y = lifeExp, size = pop, colour = continent)) +
+  geom_point() 
+```
+ 
+ 
