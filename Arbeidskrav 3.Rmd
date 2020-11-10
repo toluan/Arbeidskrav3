@@ -8,11 +8,9 @@ output:
 ```{r include=FALSE}
 library(readr)
 library(tibble)
-library(prettydoc)
 library(knitr)
 library(tidyverse)
 library(dplyr)
-options(scipen = 999)
 ```
 
 
@@ -223,10 +221,54 @@ my_gapminder_1962 %>%
   geom_point() 
 ```
 
+```{r}
+my_gapminder_1987 <- gapminder1 %>% 
+  group_by(country) %>%
+  filter(year == "1987-01-01") %>%
+  filter(!is.na(gdpPercap)) 
+```
+
+```{r}
+my_gapminder_1987 %>%
+  ggplot(my_gampinder_1987, mapping = aes(x = gdpPercap, y = lifeExp, size = pop, colour = continent)) +
+  geom_point() 
+```
+
+```{r}
+my_gapminder_2017 <- gapminder1 %>% 
+  group_by(country) %>%
+  filter(year == "2017-01-01") %>%
+  filter(!is.na(gdpPercap)) 
+```
+
+```{r}
+my_gapminder_2017 %>%
+  ggplot(my_gampinder_2017, mapping = aes(x = gdpPercap, y = lifeExp, size = pop, colour = continent)) +
+  geom_point() 
+```
 
 
+16. Do the same three plots as above, but now use the log transform of gdpPercap, i.e.mapping = aes(x= log(gdpPercap), y...and use coord_cartesian(xlim = c(5, 12), ylim = c(30, 100)) after geom_point to control the layout of the axes.
 
+```{r}
+my_gapminder_1962 %>%
+  ggplot(my_gampinder_1962, mapping = aes(x = log(gdpPercap), y = lifeExp, size = pop, colour = continent)) +
+  geom_point()+
+  coord_cartesian(xlim = c(5, 12), ylim = c(30, 100))
+```
 
+```{r}
+my_gapminder_1987 %>%
+  ggplot(my_gampinder_1987, mapping = aes(x = log(gdpPercap), y = lifeExp, size = pop, colour = continent)) +
+  geom_point()+
+  coord_cartesian(xlim = c(5, 12), ylim = c(30, 100))
+```
 
+```{r}
+my_gapminder_2017 %>%
+  ggplot(my_gampinder_2017, mapping = aes(x = log(gdpPercap), y = lifeExp, size = pop, colour = continent)) +
+  geom_point()+
+  coord_cartesian(xlim = c(5, 12), ylim = c(30, 100))
+```
 
-
+17. How will you characterise the development the 55 years from 1962 to 2017?
