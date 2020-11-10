@@ -194,7 +194,6 @@ my_gapminder_1962 <- gapminder1 %>%
   filter(!is.na(gdpPercap)) 
   
 length(unique(my_gapminder_1962$country))
-  
 ```
 
 Vi ser her at det nå er 90 land igjen etter at vi fjernet de som manglet data om gdpPercap. Under har vi fått opp en tabell som viser hvordan fordelingen av land per kontinent er. Det er flest land fra Afrika og minst land fra Oceania. 
@@ -223,3 +222,11 @@ my_gapminder_1962 %>%
   ggplot(my_gampinder_1962, mapping = aes(x = gdpPercap, y = lifeExp, size = pop, colour = continent)) +
   geom_point() 
 ```
+
+
+
+
+
+
+
+
