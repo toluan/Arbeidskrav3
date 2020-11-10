@@ -224,4 +224,4 @@ my_gapminder_1962 %>%
   geom_point() 
 ```
  
- 
+  
