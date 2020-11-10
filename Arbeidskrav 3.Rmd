@@ -74,7 +74,8 @@ g_c %>%
 
 ```{r}
 lifeExp <-read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--life_expectancy_years--by--geo--time.csv",col_types =cols(time =col_date(format = "%Y")))
-lifeExp <- lifeExp%>%rename(year = time)
+lifeExp <- lifeExp%>%
+rename(year = time)
 length(unique(lifeExp$geo))
 ```
 
@@ -115,7 +116,7 @@ g_c_min <- g_c_min %>%
   filter(min_year == "1970-01-01")
 
 attach(g_c_min)
-tibble(country = unique(name.x))
+tibble(country = unique(name))
 ```
 
 Vi får her opp at det er landene Andorra, Dominica og Marshall Islands som har den laveste forventede levealderen.
@@ -135,9 +136,6 @@ g_c <- g_c%>%
 11. Let u_pop be urban population. Import urban_population and left_join with g_c.
 
 ```{r}
-u_pop <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--urban_population--by--geo--time.csv",
-    col_types = cols(time = col_date(format = "%Y")))
-
 u_pop <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--urban_population--by--geo--time.csv", 
     col_types = cols(time = col_date(format = "%Y")))
 ```
@@ -150,7 +148,7 @@ g_c <- g_c %>%
 12. Read in gdp_percapita_us_inflation_adjusted and call it ‘gdp_pc`. Left join the data with g_c.
 
 ```{r}
-gdp_pc <- ddf_datapoints_gdppercapita_us_inflation_adjusted_by_geo_time <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--gdppercapita_us_inflation_adjusted--by--geo--time.csv",
+gdp_pc <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--gdppercapita_us_inflation_adjusted--by--geo--time.csv",
     col_types = cols(time = col_date(format = "%Y")))
 ```
 
@@ -158,7 +156,39 @@ gdp_pc <- ddf_datapoints_gdppercapita_us_inflation_adjusted_by_geo_time <- read_
 g_c <- g_c %>%
   left_join(gdp_pc, by = c("country" = "geo", "year" = "time"))
 ```
+
+
+
 13. Restrict g_c to the period from 1962 to 2017 (in the gapminder package there is data from the years 1952 and 1957, but these seems to have disappeared from systema_globalis) and select the variables: name, continent, year, lifeExp, pop, gdpPercap.  As in gapminder use data from every 5th year,i.e. 1962, 1967, 1972, 1977, 1982, 1987, 1992, 1997, 2002, 2007, 2012, 2017.
 
+```{r}
+g_c <- g_c %>% 
+  rename("gdpPercap" = "x2") %>%
+  rename("lifeExp" = "x1") %>%
+  rename("pop" = "x")
+```
 
+```{r}
+resy <- paste(seq(1962, 2017, by = 5), "01-01", sep = "-") %>% 
+  parse_date(format = "%Y-%m-%d")
+
+gapminder1 <- g_c %>%
+  filter(year %in% resy) %>%
+  select(name, continent, year, lifeExp, pop, gdpPercap) %>%
+  rename("country" = "name")
+
+dim(gapminder1)
+```
+
+Det første vi gjorde var å endre navnene på tre variabler i datasettet g_c. Grunnen til at vi gjorde det var slik at vi stemte overens med variabelnamene i gapminder-datasettet. Videre opprettet vi "resy" hvor vi gjorde restriksjoner på datasettet, og vi valgte å ta 5 års mellomrom fra 1962 til 2017. Det gjorde at vi for hvert land fikk 12 observasjoner. 
+
+Deretter opprettet vi datasettet "gapminder1" der vi først rangerte variabelen "year", for så å ta med de andre variablene "country, continent, year, lifeExp, pop, gdpPercap". 
+
+
+14. Make a subset of gapminder, my_gapminder_1962, which include countries with data from 1962-2017(include Venezuela even though it has NA for gdpPercap2017). How many countries are now in the dataset? How many countries from each continent? How many NAs are there in my_gapminder_1962`? (Hint: The function duplicated()might be of help)
+
+```{r}
+
+
+```
 
