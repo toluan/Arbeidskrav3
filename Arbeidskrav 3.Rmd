@@ -1,8 +1,9 @@
 ---
-title: "R Notebook"
+title: "Arbeidskrav 3"
 output:
   html_document:
     df_print: paged
+
 ---
 
 ```{r include=FALSE}
@@ -14,20 +15,20 @@ library(dplyr)
 ```
 
 
-# 1.
+## 1.
 
 I filen ddf_concepts.csv inneholder det en oversikt over alle datasettene som finnes i gapminderen. En kan der gå inn å se etter datasett som kan være interessante, slik at en da slipper å gå gjennom alle filene for å se hva det er. Det er 596 observasjoner med 17 variabler i filen.
 
-# 2.
+## 2.
 
 I denne filen får vi en oversikt over hvordan befolkningen i ulike land har det. De har rangert hvilken inntektsgruppe befolkningen er i og hvilken religion som er hovedreligionen i landet. De har også sett på om landet har kystlinje eller ikke. Det er også to forskjellige måter å bestemme hvilken verdensregion landene tilhører. Den ene variablene har brukt fire regioner, mens den andre har brukt seks regioner. Det er 273 observasjoner med 21 variabler i filen. 
 
-# 3. 
+## 3.
 
 I filen er det 8 observasjoner med 4 variabler. Den gir en oversikt over hvilke land som er i variabelen. Et eksempel er "un_oceania_exc_australia_and_new_zealand" som betyr Oceanica uten Australia og New Zealand. 
 
 
-# 4. 
+## 4.
 
 ```{r}
 library(readr)
@@ -51,7 +52,7 @@ g_c <- g_c %>%
 view(g_c)
 ```
 
-# 5. 
+## 5.
 ```{r}
 length(g_c$name)
 ```
@@ -59,15 +60,16 @@ length(g_c$name)
 Det er 247 land igjen etter oppgave 4. 
 
 
-# 6. 
+## 6.
 
 ```{r}
 g_c %>%
     count(continent)
 ```
 
+Fordelingen av land per kontinent kan vi se i tabellen. 
 
-# 7. 
+## 7.
 ```{r}
 lifeExp <-read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--life_expectancy_years--by--geo--time.csv",
           col_types =cols(time =col_date(format = "%Y")))
@@ -80,7 +82,7 @@ length(unique(lifeExp$geo))
 
 Det er nå 189 land igjen med informasjon om forventet levetid. 
 
-# 8. 
+## 8.
 
 ```{r}
 g_c <- g_c%>%
@@ -90,7 +92,7 @@ g_c <- g_c%>%
     filter(year<"2020-01-01")
 ```
 
-# 9. 
+## 9. 
 
 ```{r}
 g_c_min <- g_c %>%
@@ -120,7 +122,7 @@ tibble(country = unique(name))
 
 Vi får her opp at det er landene Andorra, Dominica og Marshall Islands som har den laveste forventede levealderen.
 
-# 10. 
+## 10. 
 ```{r}
 pop <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--population_total--by--geo--time.csv",
 col_types = cols(time = col_date(format = "%Y")))
@@ -131,7 +133,7 @@ g_c <- g_c%>%
     left_join(pop, by =c("country" = "geo", "year" = "time"))
 ```
 
-# 11.
+## 11.
 
 ```{r}
 u_pop <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--urban_population--by--geo--time.csv", 
@@ -143,7 +145,7 @@ g_c <- g_c %>%
   left_join(u_pop, by = c("country" = "geo", "year" = "time"))
 ```
 
-# 12. 
+## 12. 
 
 ```{r}
 gdp_pc <- read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--gdppercapita_us_inflation_adjusted--by--geo--time.csv",
@@ -157,7 +159,7 @@ g_c <- g_c %>%
 
 
 
-# 13.
+## 13.
 
 ```{r}
 g_c <- g_c %>% 
@@ -183,7 +185,7 @@ Det første vi gjorde var å endre navnene på tre variabler i datasettet g_c. G
 Deretter opprettet vi datasettet "gapminder1" der vi først rangerte variabelen "year", for så å ta med de andre variablene "country, continent, year, lifeExp, pop, gdpPercap". 
 
 
-# 14. 
+## 14. 
 
 ```{r}
 my_gapminder_1962 <- gapminder1 %>% 
@@ -213,7 +215,7 @@ my_gapminder_venezuela <- gapminder1 %>%
   my_gapminder_venezuela
 ```
  
-# 15. 
+## 15. 
  
 ```{r}
 my_gapminder_1962 %>%
@@ -248,7 +250,7 @@ my_gapminder_2017 %>%
 ```
 
 
-# 16. 
+## 16. 
 
 ```{r}
 my_gapminder_1962 %>%
@@ -271,6 +273,6 @@ my_gapminder_2017 %>%
   coord_cartesian(xlim = c(5, 12), ylim = c(30, 100))
 ```
 
-# 17. 
+## 17. 
 
 Vi kan se at den generelle forventede levealderen har steget de siste 55 årene. I 1962 var det mange land fra Afrika, Amerikas og Asia som hadde lav gdpPercap og lav forventet levealder, mens over årene har disse landene og kontinentene fått en høyere levealder og en høyere gdpPercap. 
