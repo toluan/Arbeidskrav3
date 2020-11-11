@@ -3,7 +3,7 @@ title: "Arbeidskrav 3"
 output:
   html_document:
     df_print: paged
-
+lang: nb-no
 ---
 
 ```{r include=FALSE}
