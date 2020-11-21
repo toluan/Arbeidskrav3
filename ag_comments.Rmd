@@ -4,3 +4,13 @@ output: html_notebook
 ---
 
 # Kommentarer
+
+Ser ut som dere bommer på det siste datasettet med 90 land som har data fra 1962. Se mine kommentarer i Arbeidskrav 3.Rmd
+
+Filnavnene til data-filene er svært lange. Gjør at de går utenfor høyre marg. Rundt linje 75 i Arbeidskrav 3.Rmd har jeg vist et lite triks med bruk av paste som gjør at en kan bryte disse lange stiene over flere linjer.
+
+Også der lange filnavn ikke inngår har dere noen lange linjer. Et linjeskift etter en parameter (etter ,) gjør koden lettere å lese.
+
+Setter dere navn på code-chunkene blir det lettere å navigere i dokumentet og også finne hvor eventuelle feil er.
+
+Ellers et fint stykke arbeide.
