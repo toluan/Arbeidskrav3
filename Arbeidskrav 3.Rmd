@@ -71,8 +71,14 @@ Fordelingen av land per kontinent kan vi se i tabellen.
 
 ## 7.
 ```{r}
-lifeExp <-read_csv("Data/ddf--gapminder--systema_globalis-master/countries-etc-datapoints/ddf--datapoints--life_expectancy_years--by--geo--time.csv",
-          col_types =cols(time =col_date(format = "%Y")))
+lifeExp <-read_csv(paste(
+  "Data/",
+  "ddf--gapminder--systema_globalis-master/",
+  "countries-etc-datapoints/",
+  "ddf--datapoints--life_expectancy_years--by--geo--time.csv",
+  sep=""
+  ),
+  col_types =cols(time =col_date(format = "%Y")))
 
 lifeExp <- lifeExp%>%
 rename(year = time)
@@ -86,7 +92,8 @@ Det er nå 189 land igjen med informasjon om forventet levetid.
 
 ```{r}
 g_c <- g_c%>%
-    select(country, name, iso3166_1_alpha3, main_religion_2008, un_sdg_region, world_4region, continent, world_6region) %>%
+    select(country, name, iso3166_1_alpha3, main_religion_2008,
+           un_sdg_region, world_4region, continent, world_6region) %>%
     left_join(lifeExp, by =c("country" = "geo")) %>%
     filter(!(is.na(year)& is.na(life_expectancy_years))) %>%
     filter(year<"2020-01-01")
@@ -192,9 +199,39 @@ my_gapminder_1962 <- gapminder1 %>%
   group_by(country) %>%
   filter(year == "1962-01-01") %>%
   filter(!is.na(gdpPercap)) 
-  
-length(unique(my_gapminder_1962$country))
+
 ```
+
+Over finner dere bare landene som har data i 1962. Tror det vil virke, men vi bør finne de landene som har data **fra og med** 1962
+
+```{r}
+library(lubridate)
+c_min_y <- gapminder1 %>%
+  filter(!is.na(gdpPercap)) %>% # fjerner obs uten gdpPercap
+  group_by(country) %>% 
+  summarise(min_year = min(year)) # finner første år for hvert land
+
+c_min_62 <- c_min_y %>% 
+  filter(min_year == ymd("1962-01-01")) %>% 
+  select(country)
+
+dim(c_min_62)
+
+gapminder_62_17 <- gapminder1 %>%
+  filter(country %in% c_min_62$country)
+
+sum(is.na(gapminder_62_17))
+dim(gapminder_62_17)
+```
+
+Ser at vi har 90 land med data fra 1962, men ett av dem har en NA for gdpPercap i et senere år. Hvilket er dette?
+
+```{r}
+gapminder_62_17 %>% 
+  filter(is.na(gdpPercap) == TRUE) %>% 
+  select(country, year)
+```
+
 
 Vi ser her at det nå er 90 land igjen etter at vi fjernet de som manglet data om gdpPercap. Under har vi fått opp en tabell som viser hvordan fordelingen av land per kontinent er. Det er flest land fra Afrika og minst land fra Oceania. 
 
@@ -210,11 +247,20 @@ my_gapminder_1962 %>%
 my_gapminder_venezuela <- gapminder1 %>% 
   group_by(country) %>%
   filter(country == "Venezuela") %>%
-  filter(!is.na(gdpPercap)) 
+  filter(!is.na(gdpPercap))
   
   my_gapminder_venezuela
+
 ```
- 
+
+Dere glemmer å plukke ut som et subset de landene som har data fra 1962. Dere har alt funnet de landene som har data i 1962
+
+```{r}
+
+```
+
+
+
 ## 15. 
  
 ```{r}
